@@ -60,7 +60,9 @@ module.exports = cms => {
     }
     const hideField = getHideFields(socket.request.user, name);
     // Remove hide field from form
-    collection.form = collection.form.filter(item => !hideField.includes(item.key));
+    if (Array.isArray(hideField)) {
+      collection.form = collection.form.filter(item => !hideField.includes(item.key));
+    }
     next(null, { collection });
   };
 };

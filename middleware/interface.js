@@ -79,7 +79,9 @@ module.exports = cms => {
     const queryCondition = getQueryCondition(socket.request.user, name);
     chain[0] = addQueryCondition(model, chain[0], queryCondition);
     const hideField = getHideFields(socket.request.user, name);
-    chain.push({ fn: 'select', args: [hideField.map(i => `-${i}`).join(' ')] });
+    if (Array.isArray(hideField)) {
+      chain.push({ fn: 'select', args: [hideField.map(i => `-${i}`).join(' ')] });
+    }
     next(null, { model, chain });
   };
 };
