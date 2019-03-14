@@ -1,0 +1,14 @@
+{
+  "_id": "5c8a0c3f5fded419905f5d4d",
+  "__v": 0,
+  "loader": {
+    "type": "backend-middleware-collection"
+  },
+  "path": "middleware/collection.js",
+  "plugin": "permission-plugin",
+  "props": {
+    "_code_type_": "commonJs",
+    "_code_": ""
+  },
+  "id": "5c8a0c3f5fded419905f5d4d"
+}
