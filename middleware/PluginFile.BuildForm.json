@@ -1,0 +1,239 @@
+{
+  "_id": "5c3d90e839e5f23b9d7fe97a",
+  "__v": 0,
+  "type": "Collection",
+  "alwaysLoad": true,
+  "class": null,
+  "name": "PluginFile",
+  "tabs": [
+    {
+      "fields": [
+        "props"
+      ],
+      "_id": "5c4c19ea41a8b04ba690c142",
+      "name": "Props"
+    }
+  ],
+  "fields": [
+    {
+      "_id": "5c4974534d5ad80da91e03b5",
+      "schemaType": "string",
+      "key": "plugin",
+      "default": null,
+      "type": "input@select",
+      "optionsType": "code",
+      "options": {
+        "_code_type_": "commonJs",
+        "_code_": "module.exports = function () {\n  return cms.plugins;\n}"
+      }
+    },
+    {
+      "_id": "5c3d922e39e5f23b9d7fe985",
+      "schemaType": "string",
+      "key": "path",
+      "default": null,
+      "type": "input",
+      "label": null,
+      "flex": "md4"
+    },
+    {
+      "_id": "5c3d922e39e5f23b9d7fe984",
+      "schemaType": "string",
+      "key": "type",
+      "type": "input@select",
+      "label": null,
+      "flex": "md4",
+      "optionsType": "onlyValue",
+      "options": [
+        "backend",
+        "frontend",
+        "data",
+        "vue-component",
+        "cmsconfig"
+      ],
+      "default": null
+    },
+    {
+      "_id": "5c3ef71cff94f201059ae5e7",
+      "schemaType": "mixed",
+      "key": "loader",
+      "type": "choice",
+      "label": null,
+      "flex": null,
+      "choiceKey": "type",
+      "choiceKeyOutside": null,
+      "fields": [
+        {
+          "schemaType": "object",
+          "key": "vue-component-loader",
+          "type": "object",
+          "label": "vue-component-loader",
+          "flex": null,
+          "noPanel": null,
+          "fields": [
+            {
+              "schemaType": "string",
+              "key": "name",
+              "type": "input",
+              "label": null,
+              "flex": null
+            },
+            {
+              "schemaType": "string",
+              "key": "form",
+              "type": "input@select",
+              "optionsType": "code",
+              "options": {
+                "_code_type_": "commonJs",
+                "_code_": "module.exports = function ({ model }) {\n  return cms.Types.BuildForm.list.map(f => f.name);\n}"
+              }
+            }
+          ],
+          "default": null,
+          "mixed": null
+        },
+        {
+          "schemaType": "object",
+          "key": "amd-loader",
+          "type": "object",
+          "fields": [
+            {
+              "schemaType": "string",
+              "key": "name",
+              "type": "input",
+              "label": null,
+              "flex": null
+            }
+          ],
+          "label": null,
+          "flex": null,
+          "noPanel": null,
+          "default": null,
+          "mixed": null
+        },
+        {
+          "schemaType": "object",
+          "key": "umd-loader",
+          "type": "object",
+          "label": null,
+          "flex": null,
+          "noPanel": null,
+          "fields": [
+            {
+              "schemaType": "string",
+              "key": "name",
+              "type": "input",
+              "label": null,
+              "flex": null
+            }
+          ]
+        },
+        {
+          "schemaType": "object",
+          "key": "form-field-loader",
+          "type": "object",
+          "label": null,
+          "flex": null,
+          "noPanel": null,
+          "fields": [
+            {
+              "schemaType": "string",
+              "type": "input",
+              "label": null,
+              "flex": null,
+              "key": "name"
+            }
+          ]
+        },
+        {
+          "schemaType": "object",
+          "key": "backend-middleware-socket",
+          "fields": [
+            {
+              "schemaType": "string",
+              "key": "parameter",
+              "type": "input"
+            }
+          ],
+          "type": "object"
+        },
+        {
+          "schemaType": "object",
+          "key": "backend-middleware-interface",
+          "fields": [
+            {
+              "schemaType": "string",
+              "key": "parameter",
+              "type": "input"
+            }
+          ],
+          "type": "object"
+        },
+        {
+          "schemaType": "object",
+          "key": "backend-middleware-collection",
+          "fields": [
+            {
+              "schemaType": "string",
+              "key": "parameter",
+              "type": "input"
+            }
+          ],
+          "type": "object"
+        },
+        {
+          "schemaType": "object",
+          "key": "backend-middleware-express",
+          "fields": [
+            {
+              "schemaType": "string",
+              "key": "parameter",
+              "type": "input"
+            }
+          ],
+          "type": "object"
+        },
+        {
+          "schemaType": "object",
+          "key": "backend-middleware-static",
+          "fields": [
+            {
+              "schemaType": "string",
+              "key": "parameter",
+              "type": "input"
+            }
+          ],
+          "type": "object"
+        },
+        {
+          "schemaType": "object",
+          "key": "backend-api",
+          "fields": [
+            {
+              "schemaType": "string",
+              "key": "parameter",
+              "type": "input"
+            }
+          ],
+          "type": "object"
+        }
+      ],
+      "default": null,
+      "mixed": null
+    },
+    {
+      "_id": "5c4e7b98ae51814bd3c43d74",
+      "schemaType": "mixed",
+      "key": "props",
+      "type": "editor",
+      "label": null,
+      "codeType": "commonJs",
+      "height": null,
+      "width": null,
+      "default": null,
+      "mixed": null
+    }
+  ],
+  "id": "5c3d90e839e5f23b9d7fe97a",
+  "extensions": []
+}
