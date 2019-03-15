@@ -8,13 +8,13 @@ module.exports = (cms) => {
     const { username, password } = req.body;
     const model = cms.getModel('User');
     if (_.isEmpty(model)) {
-      res.status(400).json({message: 'Not found collection'})
+      res.status(400).json({ message: 'Not found collection' });
     }
     model.findOne({ username })
       .then(user => {
         if (user) {
           if (user.password === password) {
-            const payload = _.pick(user.toObject(), ['username', '_id', 'collectionPermission', 'role', 'queryCondition']);
+            const payload = _.omit(user.toObject(), ['password']);
             const token = jwt.sign(payload, secretKey, { expiresIn: expireIn });
             res.cookie('token', token);
             res.status(200).json({ token });

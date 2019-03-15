@@ -1,0 +1,75 @@
+{
+  "_id": "5c8a26f739d1c91b2191305f",
+  "__v": 0,
+  "extensions": [],
+  "fields": [
+    {
+      "_id": "5c8883961591d506a250b29a",
+      "schemaType": "string",
+      "key": "name",
+      "unique": true,
+      "type": "input"
+    },
+    {
+      "_id": "5c809dd69d35ec189a548118",
+      "schemaType": "array",
+      "key": "collectionPermission",
+      "type": "tableArray",
+      "fields": [
+        {
+          "schemaType": "string",
+          "key": "collectionName",
+          "type": "input@select",
+          "optionsType": "code",
+          "options": {
+            "_code_type_": "commonJs",
+            "_code_": "module.exports = function getOptions() { \n  return Object.keys(cms.Types); \n}"
+          }
+        },
+        {
+          "schemaType": "string",
+          "key": "permission",
+          "type": "input@select",
+          "optionsType": "onlyValue",
+          "options": [
+            "read",
+            "write"
+          ]
+        },
+        {
+          "schemaType": "mixed",
+          "key": "queryCondition",
+          "type": "editor",
+          "label": "query condition (object)",
+          "height": "120px",
+          "codeType": "commonJs",
+          "default": "module.exports = {   find: {},   create: {} }"
+        },
+        {
+          "schemaType": "array",
+          "key": "hideFields",
+          "fields": [
+            {
+              "schemaType": "string"
+            }
+          ],
+          "type": "input@multiSelect",
+          "optionsType": "code",
+          "options": {
+            "_code_type_": "commonJs",
+            "_code_": "module.exports = function getOptions({model}) {\n const _type = model.collectionName; \n   if (!_type) return []; \n   return cms.Types[_type].form.map(i=>i.key);\n}"
+          }
+        }
+      ],
+      "expansion": [
+        "queryCondition"
+      ]
+    }
+  ],
+  "id": "5c8a26f739d1c91b2191305f",
+  "tabs": [],
+  "name": "Role",
+  "alwaysLoad": true,
+  "type": "Collection",
+  "title": "name"
+}

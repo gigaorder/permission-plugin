@@ -1,0 +1,33 @@
+{
+  "_id": "5c88c7bd93ff0f0c55233e98",
+  "extensions": [],
+  "fields": [
+    {
+      "_id": "5c88c80c93ff0f0c55233e9a",
+      "schemaType": "string",
+      "key": "name",
+      "default": "",
+      "type": "input"
+    },
+    {
+      "_id": "5c88c80c93ff0f0c55233e99",
+      "schemaType": "string",
+      "key": "amount",
+      "type": "input"
+    },
+    {
+      "_id": "5c88c8b3974c0c0c7021376f",
+      "schemaType": "objectId",
+      "key": "user",
+      "ref": "User",
+      "autopopulate": true,
+      "type": "ref-select"
+    }
+  ],
+  "id": "5c88c7bd93ff0f0c55233e98",
+  "name": "Reseller",
+  "tabs": [],
+  "type": "Collection",
+  "alwaysLoad": true,
+  "title": "name"
+}

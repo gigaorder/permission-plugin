@@ -1,56 +1,9 @@
-const _ = require('lodash');
-const jsonfn = require('json-fn');
-
-function getCollectionPermission(user, collection) {
-  if (user.role === 'admin') {
-    // special role
-    return 'all';
-  }
-  const { collectionPermission } = user;
-  if (!Array.isArray(collectionPermission)) {
-    return null;
-  }
-  const permission = collectionPermission.find(item => item.collectionName === collection);
-  if (permission) {
-    return permission.permission;
-  }
-}
-
-function getQueryCondition(user, collection) {
-  if (user.role === 'admin') {
-    return;
-  }
-  const { collectionPermission } = user;
-  if (!Array.isArray(collectionPermission)) {
-    return null;
-  }
-  const permission = collectionPermission.find(item => item.collectionName === collection);
-
-  if (permission) {
-    let queryCondition = jsonfn.clone(permission.queryCondition, true, true);
-    queryCondition = _.omit(queryCondition, ['_code_', '_code_type_']);
-    return queryCondition;
-  }
-}
-
-function getHideFields(user, collection) {
-  if (user.role === 'admin') {
-    return [];
-  }
-  const { collectionPermission } = user;
-  if (!Array.isArray(collectionPermission)) {
-    return null;
-  }
-  const permission = collectionPermission.find(item => item.collectionName === collection);
-  if (permission) {
-    return permission.hideFields;
-  }
-}
+const { getCollectionPermission, getHideFields, getQueryCondition } = require('./utils');
 
 module.exports = cms => {
   return async function getCollectionMiddleware({ name, socket, collection }, next) {
     const permission = getCollectionPermission(socket.request.user, name);
-    const queryConditions = getQueryCondition(socket.request.user, name);
+    const queryConditions = await getQueryCondition(socket.request.user, name);
     if (!permission) {
       return next('error');
     }
