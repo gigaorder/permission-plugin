@@ -24,10 +24,11 @@
       "type": "ref-select"
     }
   ],
-  "id": "5c88c7bd93ff0f0c55233e98",
   "name": "Reseller",
   "tabs": [],
   "type": "Collection",
   "alwaysLoad": true,
-  "title": "name"
+  "title": "name",
+  "__v": 0,
+  "id": "5c88c7bd93ff0f0c55233e98"
 }
