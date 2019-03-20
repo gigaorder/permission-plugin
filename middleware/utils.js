@@ -2,7 +2,7 @@ const jsonfn = require('json-fn');
 const _ = require('lodash');
 
 function getCollectionPermission(user, collection) {
-  if (!user.role) {
+  if (!user || !user.role) {
     return;
   }
   if (user.role.name === 'admin') {

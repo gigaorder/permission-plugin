@@ -9,11 +9,11 @@ module.exports = cms => {
       if (err) {
         return next({ data: { to: '/login', message: err.message } });
       }
-      const __User = cms.getModel('User');
-      if (_.isEmpty(__User)) {
+      const User = cms.getModel('User');
+      if (_.isEmpty(User)) {
         return next();
       }
-      __User.findOne({ username: user.username })
+      User.findOne({ username: user.username })
         .then(_u => {
           if (_u) {
             socket.request.user = user;

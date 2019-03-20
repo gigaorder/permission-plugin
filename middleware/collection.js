@@ -12,7 +12,7 @@ module.exports = cms => {
         const queryConditions = await getQueryCondition(socket.request.user, collectionName);
         if (queryConditions) {
           // collection.list = [];
-          const list = await cms.getModel(collectionName).find(queryConditions || {});
+          const list = await cms.getModel(collectionName).find(queryConditions && queryConditions.find || {});
           collection.list = list;
         }
       }
