@@ -1,21 +1,28 @@
 const { getCollectionPermission, getHideFields, getQueryCondition } = require('./utils');
 
 module.exports = cms => {
-  return async function getCollectionMiddleware({ name, socket, collection }, next) {
-    const permission = getCollectionPermission(socket.request.user, name);
-    const queryConditions = getQueryCondition(socket.request.user, name);
-    if (!permission) {
-      return next('error');
+  return async function getCollectionMiddleware({ socket, collections }, next) {
+    for (let collectionName in collections) {
+      const collection = collections[collectionName];
+      const permission = getCollectionPermission(socket.request.user, collectionName);
+      if (!permission) {
+        delete collections[collectionName];
+      }
+      if (collection.info.alwaysLoad) {
+        const queryConditions = await getQueryCondition(socket.request.user, collectionName);
+        if (queryConditions) {
+          // collection.list = [];
+          const list = await cms.getModel(collectionName).find(queryConditions && queryConditions.find || {});
+          collection.list = list;
+        }
+      }
+      const hideField = getHideFields(socket.request.user, collectionName);
+      // Remove hide field from form
+      if (Array.isArray(hideField)) {
+        collection.form = collection.form.filter(item => !hideField.includes(item.key));
+      }
     }
-    if (collection.info.alwaysLoad) {
-      const list = await cms.getModel(name).find((queryConditions && queryConditions.find) ? queryConditions.find : {});
-      collection.list.push(...list);
-    }
-    const hideField = getHideFields(socket.request.user, name);
-    // Remove hide field from form
-    if (Array.isArray(hideField)) {
-      collection.form = collection.form.filter(item => !hideField.includes(item.key));
-    }
-    next(null, { collection });
+    next(null, { collections });
+
   };
 };
