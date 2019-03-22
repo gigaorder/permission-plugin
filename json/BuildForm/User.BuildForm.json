@@ -22,14 +22,6 @@
       "ref": "Role",
       "autopopulate": true,
       "type": "ref-select"
-    },
-    {
-      "_id": "5c8a2ca78d71081d208ecd24",
-      "schemaType": "objectId",
-      "key": "reseller",
-      "ref": "Reseller",
-      "type": "ref-select",
-      "addable": true
     }
   ],
   "name": "User",
