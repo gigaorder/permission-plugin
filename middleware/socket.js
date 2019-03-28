@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const expireIn = 60 * 60 * 24 * 7; // 7 days
 const secretKey = 'eSdsL0AxK332GnqQbkWh';
+const _ = require('lodash');
 
 module.exports = cms => {
   function socketVerifyService(socket, next) {
