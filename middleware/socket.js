@@ -5,7 +5,10 @@ const _ = require('lodash');
 
 module.exports = cms => {
   function socketVerifyService(socket, next) {
-    let token = socket.handshake.cookies.token;
+    if (socket.nsp.name === '/file-manager-app') {
+      return next();
+    }
+    let token = socket.handshake.query.token;
     jwt.verify(token, secretKey, (err, user) => {
       if (err) {
         return next({ data: { to: '/login', message: err.message } });
@@ -20,10 +23,12 @@ module.exports = cms => {
             socket.request.user = user;
             next();
           } else {
+            socket.disconnect();
             next({ data: { to: '/login', message: 'invalid token' } });
           }
         })
         .catch(err => {
+          socket.disconnect();
           next({ data: { to: '/login', message: 'internal_error' } });
         });
     });

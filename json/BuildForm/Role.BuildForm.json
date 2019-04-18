@@ -22,8 +22,8 @@
           "type": "input@select",
           "optionsType": "code",
           "options": {
-            "_code_type_": "commonJs",
-            "_code_": "module.exports = function getOptions() { \n  return Object.keys(cms.Types); \n}"
+            "_code_": "module.exports = function getOptions() { \n  return Object.keys(cms.Types); \n}",
+            "_code_type_": "commonJs"
           }
         },
         {
@@ -56,9 +56,14 @@
           "type": "input@multiSelect",
           "optionsType": "code",
           "options": {
-            "_code_type_": "commonJs",
-            "_code_": "module.exports = function getOptions({model}) {\n const _type = model.collectionName; \n   if (!_type) return []; \n   return cms.Types[_type].form.map(i=>i.key);\n}"
+            "_code_": "module.exports = function getOptions({model}) {\n const _type = model.collectionName; \n   if (!_type) return []; \n   return cms.Types[_type].form.map(i=>i.key);\n}",
+            "_code_type_": "commonJs"
           }
+        },
+        {
+          "schemaType": "boolean",
+          "key": "hideAtSideBar",
+          "type": "input@checkbox"
         }
       ],
       "expansion": [
@@ -66,10 +71,10 @@
       ]
     }
   ],
-  "id": "5c8a26f739d1c91b2191305f",
   "tabs": [],
   "name": "Role",
   "alwaysLoad": true,
   "type": "Collection",
-  "title": "name"
+  "title": "name",
+  "id": "5c8a26f739d1c91b2191305f"
 }

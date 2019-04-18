@@ -31,7 +31,7 @@ function getQueryCondition(user, collection) {
     return null;
   }
   const permission = collectionPermission.find(item => item.collectionName === collection);
-  if (permission) {
+  if (permission && permission.queryCondition) {
     let queryCondition = jsonfn.clone(permission.queryCondition, true, true);
     if (typeof queryCondition === 'function') {
       return queryCondition(user);
@@ -56,9 +56,26 @@ function getHideFields(user, collection) {
     return permission.hideFields;
   }
 }
+function getIsHideCollection(user, collection) {
+  if (!user.role) {
+    return [];
+  }
+  if (user.role.name === 'admin') {
+    return [];
+  }
+  const { collectionPermission } = user.role;
+  if (!Array.isArray(collectionPermission)) {
+    return null;
+  }
+  const permission = collectionPermission.find(item => item.collectionName === collection);
+  if (permission) {
+    return permission.hideAtSideBar;
+  }
+}
 
 module.exports = {
   getHideFields,
   getCollectionPermission,
-  getQueryCondition
+  getQueryCondition,
+  getIsHideCollection
 };

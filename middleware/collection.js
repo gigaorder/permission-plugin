@@ -1,3 +1,4 @@
+const { getIsHideCollection } = require('./utils');
 const { getCollectionPermission, getHideFields, getQueryCondition } = require('./utils');
 
 module.exports = cms => {

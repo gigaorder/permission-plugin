@@ -14,7 +14,11 @@ function addQueryCondition(model, method, queryCondition) {
   }
   // console.log(queryCondition);
   queryCondition = jsonfn.clone(queryCondition, true, true);
-  if (/^create/.test(method.fn) || /Update|Replace/.test(method.fn) || /remove|delete|Remove|Delete/.test(method.fn)) {
+  if (typeof method.args[0] !== 'object') {
+    // find by id, cannot add query condition
+    return method;
+  }
+  if ((/^create/.test(method.fn) || /Update|Replace/.test(method.fn) || /remove|delete|Remove|Delete/.test(method.fn))) {
     method.args[0] = { ...method.args[0], ...queryCondition.create };
   } else {
     method.args[0] = { ...method.args[0], ...queryCondition.find };
