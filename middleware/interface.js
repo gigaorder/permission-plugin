@@ -19,7 +19,15 @@ function addQueryCondition(model, method, queryCondition) {
     return method;
   }
   if ((/^create/.test(method.fn) || /Update|Replace/.test(method.fn) || /remove|delete|Remove|Delete/.test(method.fn))) {
-    method.args[0] = { ...method.args[0], ...queryCondition.create };
+    if (queryCondition.create) {
+      if (Array.isArray(method.args[0])) {
+        for (let doc of method.args[0]) {
+          Object.assign(doc, queryCondition.create);
+        }
+      } else {
+        method.args[0] = { ...method.args[0], ...queryCondition.create };
+      }
+    }
   } else {
     method.args[0] = { ...method.args[0], ...queryCondition.find };
   }
@@ -30,6 +38,7 @@ module.exports = cms => {
   return function interfaceMiddleware({ name, chain, socket }, next) {
     const permission = getCollectionPermission(socket.request.user, name);
     if (!permission) {
+      console.warn(`collection ${name} is not allowed`);
       return next('not allow');
     }
     if (permission === 'read') {
