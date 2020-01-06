@@ -8,6 +8,9 @@ module.exports = cms => {
     if (socket.nsp.name === '/file-manager-app') {
       return next();
     }
+    if (socket.request.headers.referer.endsWith(cms.data['loginUrl'])) {
+      return next();
+    }
     let token = socket.handshake.query.token;
     jwt.verify(token, secretKey, (err, user) => {
       if (err) {

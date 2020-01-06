@@ -4,10 +4,12 @@ const { getCollectionPermission, getHideFields, getQueryCondition } = require('.
 module.exports = cms => {
   return async function getCollectionMiddleware({ socket, collections }, next) {
     for (let collectionName in collections) {
+      if (['ComponentBuilder', 'PluginFile'].includes(collectionName)) continue;
       const collection = collections[collectionName];
       const permission = getCollectionPermission(socket.request.user, collectionName);
       if (!permission) {
         delete collections[collectionName];
+        continue;
       }
       if (collection.info.alwaysLoad) {
         const queryConditions = await getQueryCondition(socket.request.user, collectionName);
