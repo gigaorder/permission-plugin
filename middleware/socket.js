@@ -8,7 +8,7 @@ module.exports = cms => {
     if (socket.nsp.name === '/file-manager-app') {
       return next();
     }
-    if (socket.request.headers.referer.endsWith(cms.data['loginUrl'])) {
+    if (socket.request.headers.referer && socket.request.headers.referer.endsWith(cms.data['loginUrl'])) {
       return next();
     }
     let token = socket.handshake.query.token;
