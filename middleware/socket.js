@@ -8,9 +8,14 @@ module.exports = cms => {
     if (socket.nsp.name === '/file-manager-app') {
       return next();
     }
-    if (socket.request.headers.referer.endsWith(cms.data['loginUrl'])) {
+    const referer = socket.request.headers.referer
+    if (referer && referer.endsWith(cms.data['loginUrl'])) {
       return next();
     }
+    if (referer && cms.data['nonAuthenticateUrls'] && cms.data['nonAuthenticateUrls'].find(url => _.includes(referer, url))) {
+      return next();
+    }
+
     let token = socket.handshake.query.token;
     jwt.verify(token, secretKey, (err, user) => {
       if (err) {
@@ -21,19 +26,19 @@ module.exports = cms => {
         return next();
       }
       User.findOne({ username: user.username })
-        .then(_user => {
-          if (_user) {
-            socket.request.user = _.omit(_user.toObject(), ['password']);
-            next();
-          } else {
-            socket.disconnect();
-            next({ data: { to: '/login', message: 'invalid token' } });
-          }
-        })
-        .catch(err => {
+      .then(_user => {
+        if (_user) {
+          socket.request.user = _.omit(_user.toObject(), ['password']);
+          next();
+        } else {
           socket.disconnect();
-          next({ data: { to: '/login', message: 'internal_error' } });
-        });
+          next({ data: { to: '/login', message: 'invalid token' } });
+        }
+      })
+      .catch(err => {
+        socket.disconnect();
+        next({ data: { to: '/login', message: 'internal_error' } });
+      });
     });
   }
 
