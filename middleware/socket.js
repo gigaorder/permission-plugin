@@ -26,19 +26,19 @@ module.exports = cms => {
         return next();
       }
       User.findOne({ username: user.username })
-      .then(_user => {
-        if (_user) {
-          socket.request.user = _.omit(_user.toObject(), ['password']);
-          next();
-        } else {
+        .then(_user => {
+          if (_user) {
+            socket.request.user = _.omit(_user.toObject(), ['password']);
+            next();
+          } else {
+            socket.disconnect();
+            next({ data: { to: '/login', message: 'invalid token' } });
+          }
+        })
+        .catch(err => {
           socket.disconnect();
-          next({ data: { to: '/login', message: 'invalid token' } });
-        }
-      })
-      .catch(err => {
-        socket.disconnect();
-        next({ data: { to: '/login', message: 'internal_error' } });
-      });
+          next({ data: { to: '/login', message: 'internal_error' } });
+        });
     });
   }
 
