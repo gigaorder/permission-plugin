@@ -29,6 +29,11 @@ module.exports = cms => {
         .then(_user => {
           if (_user) {
             socket.request.user = _.omit(_user.toObject(), ['password']);
+            for (const {from, to} of (_user.role.mappingUrls || [])) {
+              if (from === socket.request.headers.referer.split(socket.request.headers.origin)[1]) {
+                return next({ data: { to} });
+              }
+            }
             next();
           } else {
             socket.disconnect();
