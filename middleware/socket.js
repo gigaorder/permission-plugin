@@ -19,30 +19,30 @@ module.exports = cms => {
     let token = socket.handshake.query.token;
     jwt.verify(token, secretKey, (err, user) => {
       if (err) {
-        return next({ data: { to: cms.data['loginUrl'] || '/login', message: err.message } });
+        return next({data: {to: cms.data['loginUrl'] || '/login', message: err.message}});
       }
       const User = cms.getModel('User');
       if (_.isEmpty(User)) {
         return next();
       }
-      User.findOne({ username: user.username })
+      User.findOne({username: user.username})
         .then(_user => {
           if (_user) {
             socket.request.user = _.omit(_user.toObject(), ['password']);
             for (const {from, to} of (_user.role.mappingUrls || [])) {
-              if (from === socket.request.headers.referer.split(socket.request.headers.origin)[1]) {
-                return next({ data: { to} });
+              if (from === _.get(socket, 'request.headers.referer', '').split(_.get(socket, 'request.headers.origin'))[1]) {
+                return next({data: {to}});
               }
             }
             next();
           } else {
             socket.disconnect();
-            next({ data: { to: '/login', message: 'invalid token' } });
+            next({data: {to: '/login', message: 'invalid token'}});
           }
         })
         .catch(err => {
           socket.disconnect();
-          next({ data: { to: '/login', message: 'internal_error' } });
+          next({data: {to: '/login', message: 'internal_error'}});
         });
     });
   }
