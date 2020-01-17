@@ -30,7 +30,7 @@ module.exports = cms => {
           if (_user) {
             socket.request.user = _.omit(_user.toObject(), ['password']);
             for (const {from, to} of (_user.role.mappingUrls || [])) {
-              if (from === _.get(socket, 'request.headers.referer', '').split(_.get(socket, 'request.headers.origin'))[1]) {
+              if (from === _.get(socket, 'request.headers.referer', '').split(_.get(socket, 'request.headers.host'))[1]) {
                 return next({data: {to}});
               }
             }
