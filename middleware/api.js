@@ -17,6 +17,7 @@ module.exports = (cms) => {
             const payload = _.omit(user.toObject(), ['password']);
             const token = jwt.sign(payload, secretKey, { expiresIn: expireIn });
             res.cookie('token', token, { domain: 'localhost:8080' });
+            res.cookie('userId', user._id);
             res.status(200).json({ token });
           } else {
             res.status(400).json({ message: 'Password invalid' });
