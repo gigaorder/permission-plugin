@@ -5,29 +5,29 @@ const secretKey = 'eSdsL0AxK332GnqQbkWh';
 
 module.exports = (cms) => {
   cms.app.post('/authenticate', function (req, res) {
-    const { username, password } = req.body;
+    const {username, password} = req.body;
     const model = cms.getModel('User');
     if (_.isEmpty(model)) {
-      res.status(400).json({ message: 'Not found collection' });
+      res.status(400).json({message: 'Not found collection'});
     }
-    model.findOne({ username })
+    model.findOne({username})
       .then(user => {
         if (user) {
           if (user.password === password) {
-            const payload = _.omit(user.toObject(), ['password']);
-            const token = jwt.sign(payload, secretKey, { expiresIn: expireIn });
-            res.cookie('token', token, { domain: 'localhost:8080' });
+            const token = jwt.sign({_id: user._id}, secretKey, {expiresIn: expireIn});
+            res.cookie('token', token, {domain: 'localhost:8080'});
             res.cookie('userId', user._id);
-            res.status(200).json({ token });
+            req.session.userId = user._id
+            res.status(200).json({token});
           } else {
-            res.status(400).json({ message: 'Password invalid' });
+            res.status(400).json({message: 'Password invalid'});
           }
         } else {
-          res.status(400).json({ message: 'user is not exists' });
+          res.status(400).json({message: 'user is not exists'});
         }
       })
       .catch(err => {
-        res.status(400).json({ message: 'internal error' });
+        res.status(400).json({message: 'internal error'});
       });
   });
 };

@@ -25,7 +25,7 @@ module.exports = cms => {
       if (_.isEmpty(User)) {
         return next();
       }
-      User.findOne({username: user.username})
+      User.findOne({_id: user._id})
         .then(_user => {
           if (_user) {
             socket.request.user = _.omit(_user.toObject(), ['password']);
