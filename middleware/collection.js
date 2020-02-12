@@ -3,7 +3,7 @@ const {getCollectionPermission, getHideFields, getQueryCondition} = require('./u
 
 module.exports = cms => {
   return async function getCollectionMiddleware({session, collections}, next) {
-    const user = await cms.getModel('User').findById(session.userId).lean();
+    const user = await cms.getModel('User').findById(session.userId);
     for (let collectionName in collections) {
       if (['ComponentBuilder', 'PluginFile'].includes(collectionName)) {
         collections[collectionName].list = await cms.getModel(collectionName).find({});
@@ -17,7 +17,7 @@ module.exports = cms => {
       }
       if (collection.info.alwaysLoad) {
         const queryConditions = await getQueryCondition(user, collectionName);
-        if (queryConditions) {
+        if (queryConditions || user.role.name === 'admin') {
           // collection.list = [];
           const list = await cms.getModel(collectionName).find(queryConditions && queryConditions.find || {});
           collection.list = list;
