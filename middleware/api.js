@@ -17,7 +17,9 @@ module.exports = (cms) => {
             const token = jwt.sign({_id: user._id}, secretKey, {expiresIn: expireIn});
             res.cookie('token', token, {domain: 'localhost:8080'});
             res.cookie('userId', user._id);
+            req.session.token = token;
             req.session.userId = user._id
+            req.session.userRole = user.role;
             res.status(200).json({token});
           } else {
             res.status(400).json({message: 'Password invalid'});
@@ -30,4 +32,11 @@ module.exports = (cms) => {
         res.status(400).json({message: 'internal error'});
       });
   });
+
+  cms.app.get('/logout', function (req, res) {
+    req.session.token = undefined;
+    req.session.userId = undefined
+    req.session.userRole = undefined
+    res.send('ok')
+  })
 };
