@@ -12,9 +12,9 @@ module.exports = cms => {
     if (referer && referer.endsWith(cms.data['loginUrl'])) {
       return next();
     }
-    /*if (referer && cms.data['nonAuthenticateUrls'] && cms.data['nonAuthenticateUrls'].find(url => _.includes(referer, url))) {
+    if (referer && cms.data['nonAuthenticateUrls'] && cms.data['nonAuthenticateUrls'].find(url => _.includes(referer, url))) {
       return next();
-    }*/
+    }
 
     let token = socket.handshake.query.token;
     jwt.verify(token, secretKey, (err, user) => {
