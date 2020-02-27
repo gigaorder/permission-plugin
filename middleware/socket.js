@@ -37,12 +37,12 @@ module.exports = cms => {
             next();
           } else {
             socket.disconnect();
-            next({data: {to: '/login', message: 'invalid token'}});
+            next({data: {to: cms.data['loginUrl'] || '/login', message: 'invalid token'}});
           }
         })
         .catch(err => {
           socket.disconnect();
-          next({data: {to: '/login', message: 'internal_error'}});
+          next({data: {to: cms.data['loginUrl'] || '/login', message: 'internal_error'}});
         });
     });
   }
