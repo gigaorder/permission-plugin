@@ -19,7 +19,7 @@ function getCollectionPermission(user, collection) {
   }
 }
 
-function getQueryCondition(user, collection) {
+async function getQueryCondition(user, collection) {
   if (!user.role) {
     return;
   }
