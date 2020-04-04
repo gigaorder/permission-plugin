@@ -36,7 +36,12 @@ function addQueryCondition(model, method, queryCondition) {
 
 module.exports = cms => {
   return async function interfaceMiddleware({ name, chain, socket }, next) {
-    const permission = getCollectionPermission(socket.request.user, name);
+    let user = socket.request.user;
+    if (!user) {
+      const role = await cms.getModel('Role').findOne({name: 'nouser'});
+      if (role) user = {role};
+    }
+    const permission = getCollectionPermission(user, name);
     if (!permission) {
       console.warn(`collection ${name} is not allowed`);
       return next('not allow');
@@ -49,9 +54,9 @@ module.exports = cms => {
       }
     }
     let model = cms.getModel(name);
-    const queryCondition = await getQueryCondition(socket.request.user, name);
+    const queryCondition = await getQueryCondition(user, name);
     chain[0] = addQueryCondition(model, chain[0], queryCondition);
-    const hideField = getHideFields(socket.request.user, name);
+    const hideField = getHideFields(user, name);
     if (Array.isArray(hideField) && !['create', 'createCollection', 'aggregate'].includes(chain[0].fn)) {
       chain.push({ fn: 'select', args: [hideField.map(i => `-${i}`).join(' ')] }); // ['a','b'] => '-a -b'
     }
