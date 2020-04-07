@@ -10,7 +10,8 @@ module.exports = cms => {
     }
     const referer = socket.request.headers.referer
     if (referer && referer.endsWith(cms.data['loginUrl'])) {
-      return next();
+      if (!socket.handshake.query.token)
+        return next();
     }
     if (referer && cms.data['nonAuthenticateUrls'] && cms.data['nonAuthenticateUrls'].find(url => _.includes(referer, url))) {
       return next();
