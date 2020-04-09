@@ -20,6 +20,7 @@ module.exports = (cms) => {
             req.session.token = token;
             req.session.userId = user._id
             req.session.userRole = user.role;
+            req.session.user = _.omit(user.toJSON(), ['password']);
             res.status(200).json({token});
           } else {
             res.status(400).json({message: 'Password invalid'});
