@@ -34,6 +34,17 @@ module.exports = (cms) => {
       });
   });
 
+  cms.app.post('/update-user-session', async (req, res) => {
+    if (req.session.userId) {
+      const user = await cms.getModel('User').findOne({ _id: req.session.userId });
+      if (user) {
+        req.session.user = user
+        req.session.userRole = user.role
+        res.status(200).json(user)
+      }
+    }
+  })
+
   cms.app.get('/logout', function (req, res) {
     req.session.token = undefined;
     req.session.userId = undefined
