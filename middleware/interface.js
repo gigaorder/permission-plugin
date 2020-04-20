@@ -36,7 +36,7 @@ function addQueryCondition(model, method, queryCondition) {
 
 module.exports = cms => {
   return async function interfaceMiddleware({ name, chain, socket }, next) {
-    let user = socket.request.user;
+    let user = socket.handshake.session.user;
     if (!user) {
       const role = await cms.getModel('Role').findOne({name: 'nouser'});
       if (role) user = {role};
