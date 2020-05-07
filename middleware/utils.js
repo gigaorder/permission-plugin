@@ -37,6 +37,8 @@ async function getQueryCondition(user, collection) {
       return queryCondition(user);
     }
     return queryCondition;
+  } else if (permission) {
+    return {}
   }
 }
 
