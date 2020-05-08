@@ -37,20 +37,14 @@ module.exports = (cms) => {
   /**
    * Generate access_token base on username, password
    */
-  cms.app.post('/generate-access-token', async (req, res) => {
-    const {username, password} = req.body;
-    const model = cms.getModel('User');
-    if (_.isEmpty(model)) {
-      res.status(400).json({message: 'Not found collection'});
-    }
-    model.findOne({username, password})
-    .then(user => {
-      if (user)
-        res.json({ access_token: jwt.sign({ _id: user._id }, secretKey, { expiresIn: expireIn }) });
-      else
-        res.json({ok: false, message: 'Invalid username, password!'})
-    })
-  })
+  cms.utils = cms.utils || {}
+  cms.utils.generateAccessToken = async (username, password) => {
+    const user = await cms.getModel('User').findOne({username, password})
+    if (user)
+      return jwt.sign({ _id: user._id }, secretKey, { expiresIn: expireIn })
+    else
+      return null
+  }
 
   /**
    * Authenticate by access_token
@@ -73,11 +67,11 @@ module.exports = (cms) => {
       .then(_user => {
         if (_user) {
           res.cookie('token', access_token, {domain: 'localhost:8080'});
-          res.cookie('userId', user._id);
+          res.cookie('userId', _user._id);
           req.session.token = access_token;
-          req.session.userId = user._id
-          req.session.userRole = user.role;
-          req.session.user = _.omit(user.toJSON(), ['password']);
+          req.session.userId = _user._id
+          req.session.userRole = _user.role;
+          req.session.user = _.omit(_user.toJSON(), ['password']);
           res.status(200).json({access_token});
         } else {
           res.status(400).json({message: 'user is not exists'});
