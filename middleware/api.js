@@ -34,6 +34,61 @@ module.exports = (cms) => {
       });
   });
 
+  /**
+   * Generate access_token base on username, password
+   */
+  cms.app.post('/generate-access-token', async (req, res) => {
+    const {username, password} = req.body;
+    const model = cms.getModel('User');
+    if (_.isEmpty(model)) {
+      res.status(400).json({message: 'Not found collection'});
+    }
+    model.findOne({username, password})
+    .then(user => {
+      if (user)
+        res.json({ access_token: jwt.sign({ _id: user._id }, secretKey, { expiresIn: expireIn }) });
+      else
+        res.json({ok: false, message: 'Invalid username, password!'})
+    })
+  })
+
+  /**
+   * Authenticate by access_token
+   */
+  cms.app.post('/authenticate-with-access-token', async (req, res) => {
+    const { access_token } = req.body
+    jwt.verify(access_token, secretKey, (err, user) => {
+      if (err) {
+        res.status(400).json({message: 'internal error'});
+        return
+      }
+
+      const User = cms.getModel('User');
+      if (_.isEmpty(User)) {
+        res.status(400).json({message: 'internal error'});
+        return;
+      }
+
+      User.findOne({_id: user._id})
+      .then(_user => {
+        if (_user) {
+          res.cookie('token', access_token, {domain: 'localhost:8080'});
+          res.cookie('userId', user._id);
+          req.session.token = access_token;
+          req.session.userId = user._id
+          req.session.userRole = user.role;
+          req.session.user = _.omit(user.toJSON(), ['password']);
+          res.status(200).json({access_token});
+        } else {
+          res.status(400).json({message: 'user is not exists'});
+        }
+      })
+      .catch(err => {
+        res.status(400).json({message: 'internal error'});
+      });
+    });
+  })
+
   cms.app.post('/update-user-session', async (req, res) => {
     if (req.session.userId) {
       const user = await cms.getModel('User').findOne({ _id: req.session.userId });
