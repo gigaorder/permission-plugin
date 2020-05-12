@@ -26,6 +26,8 @@ module.exports = cms => {
     let token = socket.handshake.query.token;
     jwt.verify(token, secretKey, (err, user) => {
       if (err) {
+        if (referer && url.parse(referer).pathname === cms.data['loginUrl']) return next();
+
         return next({data: {to: cms.data['loginUrl'] || '/login', message: err.message}});
       }
       const User = cms.getModel('User');
