@@ -9,19 +9,20 @@ module.exports = cms => {
     if (socket.nsp.name === '/file-manager-app') {
       return next();
     }
-    const referer = socket.request.headers.referer
-    console.log(`referer: ${referer}`)
+
+    // add pathname if included in request query (ios safari only-origin referrer)
+    let referer = socket.request.headers.referer
+    if (socket.handshake.query.pathname) referer = url.resolve(referer, socket.handshake.query.pathname)
+
     if (referer) {
       const urlParts = url.parse(referer)
       if (urlParts.pathname === cms.data['loginUrl']) {
-        console.log('route to login')
         if (!socket.handshake.query.token)
           return next();
       }
       // using startsWith instead of === because referer path may be "path+params"
       // e.g: /store/gigashop where as /store is path and gigashop is route params
       if (cms.data['nonAuthenticateUrls'] && cms.data['nonAuthenticateUrls'].find(path => _.startsWith(urlParts.pathname, path))) {
-        console.log('proceed to nonAuth url')
         return next();
       }
     }
