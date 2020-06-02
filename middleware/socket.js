@@ -10,15 +10,18 @@ module.exports = cms => {
       return next();
     }
     const referer = socket.request.headers.referer
+    console.log(`referer: ${referer}`)
     if (referer) {
       const urlParts = url.parse(referer)
       if (urlParts.pathname === cms.data['loginUrl']) {
+        console.log('route to login')
         if (!socket.handshake.query.token)
           return next();
       }
       // using startsWith instead of === because referer path may be "path+params"
       // e.g: /store/gigashop where as /store is path and gigashop is route params
       if (cms.data['nonAuthenticateUrls'] && cms.data['nonAuthenticateUrls'].find(path => _.startsWith(urlParts.pathname, path))) {
+        console.log('proceed to nonAuth url')
         return next();
       }
     }
