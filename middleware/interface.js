@@ -57,7 +57,7 @@ module.exports = cms => {
     const queryCondition = await getQueryCondition(user, name);
     chain[0] = addQueryCondition(model, chain[0], queryCondition);
     const hideField = getHideFields(user, name);
-    if (Array.isArray(hideField) && !['create', 'createCollection', 'aggregate'].includes(chain[0].fn)) {
+    if (Array.isArray(hideField) && hideField.length > 0 && !['create', 'createCollection', 'aggregate'].includes(chain[0].fn)) {
       chain.push({ fn: 'select', args: [hideField.map(i => `-${i}`).join(' ')] }); // ['a','b'] => '-a -b'
     }
     next(null, { model, chain });
