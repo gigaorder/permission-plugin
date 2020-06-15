@@ -9,7 +9,11 @@ module.exports = cms => {
     if (socket.nsp.name === '/file-manager-app') {
       return next();
     }
-    const referer = socket.request.headers.referer
+
+    // add pathname if included in request query (ios safari only-origin referrer)
+    let referer = socket.request.headers.referer
+    if (socket.handshake.query.pathname) referer = url.resolve(referer, socket.handshake.query.pathname)
+
     if (referer) {
       const urlParts = url.parse(referer)
       if (urlParts.pathname === cms.data['loginUrl']) {
@@ -26,6 +30,8 @@ module.exports = cms => {
     let token = socket.handshake.query.token;
     jwt.verify(token, secretKey, (err, user) => {
       if (err) {
+        if (referer && url.parse(referer).pathname === cms.data['loginUrl']) return next();
+
         return next({data: {to: cms.data['loginUrl'] || '/login', message: err.message}});
       }
       const User = cms.getModel('User');
