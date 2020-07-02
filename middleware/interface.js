@@ -30,7 +30,7 @@ function addQueryCondition(model, method, queryCondition) {
     }
   } else {
     // console.log(`add role.find query for ${method.fn}`)
-    method.args[0] = { $and: [ method.args[0], queryCondition.find ]}
+    method.args[0] = { $and: [ method.args[0] || {}, queryCondition.find || {} ]}
   }
   return method;
 }
