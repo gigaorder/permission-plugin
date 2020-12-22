@@ -3,13 +3,16 @@ const { getCollectionPermission, getHideFields, getQueryCondition } = require('.
 const jsonfn = require('json-fn');
 const _ = require('lodash');
 
-const readAllowMethod = ['find', 'findOne', 'findById', 'skip', 'limit', 'count', 'countDocuments', 'estimatedDocumentCount', 'select'];
+const readAllowMethod = ['find', 'findOne', 'findById', 'skip', 'limit', 'count', 'countDocuments', 'estimatedDocumentCount', 'select', 'aggregate'];
 
 // const findMethod = ['find', 'findById', 'findOne', '']
 
 function addQueryCondition(model, method, queryCondition) {
   // console.log(queryCondition);
   if (!queryCondition) {
+    return method;
+  }
+  if (/aggregate/.test(method.fn)) {
     return method;
   }
   // console.log(queryCondition);
