@@ -41,7 +41,7 @@ module.exports = cms => {
       User.findOne({_id: user._id})
         .then(_user => {
           if (_user) {
-            socket.request.user = _.omit(_user.toObject(), ['password']);
+            socket.request.user = _.omit(_user, ['password']);
             for (const {from, to} of (_user.role.mappingUrls || [])) {
               if (from === _.get(socket, 'request.headers.referer', '').split(_.get(socket, 'request.headers.host'))[1]) {
                 return next({data: {to}});
