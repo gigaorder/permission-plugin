@@ -63,15 +63,14 @@ module.exports = (cms) => {
         return;
       }
 
-      User.findOne({_id: user._id})
-      .then(_user => {
+      User.findOne({_id: user._id}).then(_user => {
         if (_user) {
           res.cookie('token', access_token, {domain: 'localhost:8080'});
           res.cookie('userId', _user._id);
           req.session.token = access_token;
           req.session.userId = _user._id
           req.session.userRole = _user.role;
-          req.session.user = _.omit(_user.toJSON(), ['password']);
+          req.session.user = _.omit(_user, ['password']);
           res.status(200).json({access_token});
         } else {
           res.status(400).json({message: 'user is not exists'});
