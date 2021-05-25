@@ -97,6 +97,7 @@ module.exports = (cms) => {
     req.session.token = undefined;
     req.session.userId = undefined
     req.session.userRole = undefined
+    req.session.user = undefined
     res.send('ok')
   })
 };
