@@ -45,41 +45,43 @@ module.exports = (cms) => {
     else
       return null
   }
+  cms.utils.validateAccessToken = async (access_token) => {
+    return new Promise((resolve, reject) => {
+      jwt.verify(access_token, secretKey, (err, user) => {
+        try {
+          if (err)
+            reject({message: 'internal error'})
+          else
+            cms.getModel('User').findOne({_id: user._id}).then(_user => {
+              if (_user)
+                resolve(_user)
+              else
+                reject({message: 'user is not exists'})
+            })
+        } catch (e) {
+          reject({message: e.message})
+        }
+      })
+    })
+  }
 
   /**
    * Authenticate by access_token
    */
   cms.app.post('/authenticate-with-access-token', async (req, res) => {
     const { access_token } = req.body
-    jwt.verify(access_token, secretKey, (err, user) => {
-      if (err) {
-        res.status(400).json({message: 'internal error'});
-        return
-      }
-
-      const User = cms.getModel('User');
-      if (_.isEmpty(User)) {
-        res.status(400).json({message: 'internal error'});
-        return;
-      }
-
-      User.findOne({_id: user._id}).then(_user => {
-        if (_user) {
-          res.cookie('token', access_token, {domain: 'localhost:8080'});
-          res.cookie('userId', _user._id);
-          req.session.token = access_token;
-          req.session.userId = _user._id
-          req.session.userRole = _user.role;
-          req.session.user = _.omit(_user, ['password']);
-          res.status(200).json({access_token});
-        } else {
-          res.status(400).json({message: 'user is not exists'});
-        }
-      })
-      .catch(err => {
-        res.status(400).json({message: 'internal error'});
-      });
-    });
+    try {
+      const user = cms.utils.validateAccessToken(access_token)
+      res.cookie('token', access_token, {domain: 'localhost:8080'});
+      res.cookie('userId', user._id);
+      req.session.token = access_token;
+      req.session.userId = user._id
+      req.session.userRole = user.role;
+      req.session.user = _.omit(user, ['password']);
+      res.status(200).json({access_token});
+    } catch (e) {
+      res.status(400).json({message: e.message});
+    }
   })
 
   cms.app.post('/update-user-session', async (req, res) => {
