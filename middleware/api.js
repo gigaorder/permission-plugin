@@ -71,7 +71,7 @@ module.exports = (cms) => {
   cms.app.post('/authenticate-with-access-token', async (req, res) => {
     const { access_token } = req.body
     try {
-      const user = cms.utils.validateAccessToken(access_token)
+      const user = await cms.utils.validateAccessToken(access_token)
       res.cookie('token', access_token, {domain: 'localhost:8080'});
       res.cookie('userId', user._id);
       req.session.token = access_token;
